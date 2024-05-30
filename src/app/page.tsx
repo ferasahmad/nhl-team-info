@@ -1,95 +1,169 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
+import React, { useEffect, useState } from "react";
+import styled from "@emotion/styled";
+import { useRouter } from "next/navigation";
+import { CombinedTeamInfo } from "../../types";
+import { fetchCombinedTeamInfo } from "../../api";
 
-export default function Home() {
+const LeagueSummary: React.FC = () => {
+  const router = useRouter();
+  const [teams, setTeams] = useState<CombinedTeamInfo[] | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    handleFetchTeams();
+  }, []);
+
+  const handleFetchTeams = async () => {
+    try {
+      const response = await fetchCombinedTeamInfo();
+      setTeams(response);
+    } catch (error) {
+      setError("Failed to fetch team data.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const onClickViewDetails = (triCode: string) => {
+    router.push(`/team/${triCode}`);
+  };
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+    <>
+      <Header>
+        <Title>ICE INTEL</Title>
+      </Header>
+      <Container>
+        {loading ? (
+          <Message>Loading...</Message>
+        ) : error ? (
+          <Message>{error}</Message>
+        ) : (
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableData>
+                  <Label>Team Name</Label>
+                </TableData>
+                <TableData>
+                  <Label>Wins</Label>
+                </TableData>
+                <TableData>
+                  <Label>Losses</Label>
+                </TableData>
+                <TableData>
+                  <Label>Ties</Label>
+                </TableData>
+                <TableData />
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {teams &&
+                teams.map((team) => (
+                  <TableRow key={team.id}>
+                    <TableData>
+                      <Detail>{team.teamFullName ?? "Undefined"}</Detail>
+                    </TableData>
+                    <TableData>
+                      <Detail>{team.wins ?? 0}</Detail>
+                    </TableData>
+                    <TableData>
+                      <Detail>{team.losses ?? 0}</Detail>
+                    </TableData>
+                    <TableData>
+                      <Detail>{team.ties ?? 0}</Detail>
+                    </TableData>
+                    <TableData>
+                      <Button onClick={() => onClickViewDetails(team.triCode)}>
+                        View Details
+                      </Button>
+                    </TableData>
+                  </TableRow>
+                ))}
+            </TableBody>
+          </Table>
+        )}
+      </Container>
+    </>
   );
-}
+};
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+`;
+
+const Header = styled.header`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #4281a4;
+  padding: 20px 0;
+  width: 100%;
+`;
+
+const Title = styled.h1`
+  color: white;
+`;
+
+const Table = styled.table`
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  width: 100%;
+  max-width: 1200px;
+  margin-top: 20px;
+`;
+
+const TableHead = styled.thead`
+  background: #f5f5f5;
+`;
+
+const TableData = styled.td`
+  flex: 1;
+  padding: 10px;
+`;
+
+const TableBody = styled.tbody``;
+
+const TableRow = styled.tr`
+  display: flex;
+  padding: 20px;
+  border-bottom: 1px solid #d8d8d8;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const Label = styled.p`
+  font-weight: 700;
+  text-align: center;
+`;
+
+const Detail = styled.p`
+  text-align: center;
+`;
+
+const Button = styled.button`
+  padding: 10px 15px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  background: #4281a4;
+  color: white;
+  &:hover {
+    background: #306080;
+  }
+`;
+
+const Message = styled.p`
+  margin-top: 20px;
+  font-size: 18px;
+`;
+
+export default LeagueSummary;
