@@ -13,6 +13,7 @@ import {
   TableDetail,
   TableLabel,
 } from "../../components/Table";
+import LoadingIndicator from "../../components/LoadingIndicator";
 
 const LeagueSummary: React.FC = () => {
   const router = useRouter();
@@ -45,7 +46,7 @@ const LeagueSummary: React.FC = () => {
   return (
     <Container>
       {loading ? (
-        <Message>Loading...</Message>
+        <LoadingIndicator />
       ) : error ? (
         <Message>{error}</Message>
       ) : (
@@ -118,6 +119,7 @@ const Button = styled.button`
   font-size: 16px;
   background: #4281a4;
   color: white;
+  font-family: ChakraPetch;
   &:hover {
     background: #306080;
   }

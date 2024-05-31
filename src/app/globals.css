@@ -5,4 +5,23 @@
 
 body {
   background-color: #e5f5fc;
+  font-family: ChakraPetch !important;
+}
+
+@font-face {
+  font-family: ChakraPetch;
+  src: url("/fonts/ChakraPetch-Regular.ttf");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: ChakraPetch;
+  src: url("/fonts/ChakraPetch-Medium.ttf");
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: ChakraPetch;
+  src: url("/fonts/ChakraPetch-SemiBold.ttf");
+  font-weight: 600;
 }

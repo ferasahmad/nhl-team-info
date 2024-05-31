@@ -12,6 +12,7 @@ import {
   TableRow,
 } from "../../../../components/Table";
 import { TableHead } from "@mui/material";
+import LoadingIndicator from "../../../../components/LoadingIndicator";
 
 const Team = ({ params }: { params: { teamTriCode: string } }) => {
   const { teamTriCode } = params;
@@ -39,7 +40,7 @@ const Team = ({ params }: { params: { teamTriCode: string } }) => {
   return (
     <Container>
       {loading ? (
-        <Message>Loading...</Message>
+        <LoadingIndicator />
       ) : error ? (
         <Message>{error}</Message>
       ) : (
