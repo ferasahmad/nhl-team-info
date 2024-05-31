@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import styled from "@emotion/styled";
 import { fetchClubStats } from "../../../../api";
 import { ClubStats } from "../../../../types";
@@ -19,73 +19,66 @@ const Team = ({ params }: { params: { teamTriCode: string } }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (teamTriCode) {
-      handleFetchStats(teamTriCode);
-    }
-  }, [teamTriCode]);
-
-  const handleFetchStats = async (teamTriCode: string) => {
+  const handleFetchStats = useCallback(async (teamTriCode: string) => {
     try {
       const response = await fetchClubStats(teamTriCode);
       setStats(response);
     } catch (error) {
-      setError("Failed to fetch team stats.");
+      setError("Failed to fetch team stats. Please try again later.");
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (teamTriCode) {
+      handleFetchStats(teamTriCode);
+    }
+  }, [teamTriCode, handleFetchStats]);
 
   return (
-    <>
-      <Header>
-        <Title>ICE INTEL</Title>
-      </Header>
-      <Container>
-        {loading ? (
-          <Message>Loading...</Message>
-        ) : error ? (
-          <Message>{error}</Message>
-        ) : (
-          stats && (
-            <Table>
-              <TableHead>
-                <TableRow>
+    <Container>
+      {loading ? (
+        <Message>Loading...</Message>
+      ) : error ? (
+        <Message>{error}</Message>
+      ) : (
+        stats && (
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableData>
+                  <TableLabel>Season</TableLabel>
+                </TableData>
+                <TableData>
+                  <TableLabel>Game Types</TableLabel>
+                </TableData>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {stats.map((item) => (
+                <TableRow key={item.season}>
                   <TableData>
-                    <TableLabel>Season</TableLabel>
+                    <TableDetail>
+                      {`${item.season.toString().slice(0, 4)}-${item.season
+                        .toString()
+                        .slice(4, 8)}`}
+                    </TableDetail>
                   </TableData>
                   <TableData>
-                    <TableLabel>Game Types</TableLabel>
+                    <TableDetail>
+                      {item.gameTypes
+                        .map((gt) => (gt === 2 ? "Regular Season" : "Playoffs"))
+                        .join(", ")}
+                    </TableDetail>
                   </TableData>
                 </TableRow>
-              </TableHead>
-              <TableBody>
-                {stats.map((item) => (
-                  <TableRow key={item.season}>
-                    <TableData>
-                      <TableDetail>
-                        {`${item.season.toString().slice(0, 4)}-${item.season
-                          .toString()
-                          .slice(4, 8)}`}
-                      </TableDetail>
-                    </TableData>
-                    <TableData>
-                      <TableDetail>
-                        {item.gameTypes
-                          .map((gt) =>
-                            gt === 2 ? "Regular Season" : "Playoffs"
-                          )
-                          .join(", ")}
-                      </TableDetail>
-                    </TableData>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )
-        )}
-      </Container>
-    </>
+              ))}
+            </TableBody>
+          </Table>
+        )
+      )}
+    </Container>
   );
 };
 
@@ -95,19 +88,6 @@ const Container = styled.div`
   align-items: center;
   justify-content: center;
   padding: 20px;
-`;
-
-const Header = styled.header`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #4281a4;
-  padding: 20px 0;
-  width: 100%;
-`;
-
-const Title = styled.h1`
-  color: white;
 `;
 
 const Message = styled.p`
