@@ -1,11 +1,15 @@
-"use client";
-import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import styled from "@emotion/styled";
-import Image from "next/image";
+import type { Metadata } from "next";
+import Header from "../../components/Header";
 
 const inter = Inter({ subsets: ["latin"] });
+
+export const metadata: Metadata = {
+  title: "Ice Intel",
+  description:
+    "Stay updated with comprehensive statistics and insights on all NHL teams.",
+};
 
 export default function RootLayout({
   children,
@@ -15,29 +19,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <>
-          <Header>
-            <Image src="/images/hockey.png" width={50} height={50} alt="" />
-            <Title>ICE INTEL</Title>
-          </Header>
-          {children}
-        </>
+        <Header />
+        <>{children}</>
       </body>
     </html>
   );
 }
-
-const Header = styled.header`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #4281a4;
-  padding: 20px 0;
-  width: 100%;
-`;
-
-const Title = styled.h1`
-  color: white;
-  font-size: 50px;
-  margin-left: 10px;
-`;
