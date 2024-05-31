@@ -5,13 +5,13 @@ import { fetchClubStats } from "../../../../api";
 import { ClubStats } from "../../../../types";
 import {
   Table,
+  TableHead,
   TableBody,
   TableData,
   TableDetail,
   TableLabel,
   TableRow,
 } from "../../../../components/Table";
-import { TableHead } from "@mui/material";
 import LoadingIndicator from "../../../../components/LoadingIndicator";
 
 const Team = ({ params }: { params: { teamTriCode: string } }) => {
