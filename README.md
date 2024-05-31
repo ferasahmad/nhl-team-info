@@ -38,5 +38,5 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 
 ## Screenshots
 
-<img width="700" alt="Screenshot 2024-05-30 at 11 18 34 PM" src="https://github.com/ferasahmad/nhl-team-info/assets/44070373/6b1ff5b9-67a6-452f-81da-46cd46707e40">
-<img width="700" alt="Screenshot 2024-05-30 at 11 19 00 PM" src="https://github.com/ferasahmad/nhl-team-info/assets/44070373/48a0d9a9-da0e-4006-916b-6b2f758dc550">
+<img width="500" alt="Screenshot 2024-05-30 at 11 18 34 PM" src="https://github.com/ferasahmad/nhl-team-info/assets/44070373/6b1ff5b9-67a6-452f-81da-46cd46707e40">
+<img width="500" alt="Screenshot 2024-05-30 at 11 19 00 PM" src="https://github.com/ferasahmad/nhl-team-info/assets/44070373/48a0d9a9-da0e-4006-916b-6b2f758dc550">
