@@ -7,6 +7,8 @@ import {
   Table,
   TableBody,
   TableData,
+  TableDetail,
+  TableLabel,
   TableRow,
 } from "../../../../components/Table";
 import { TableHead } from "@mui/material";
@@ -49,15 +51,33 @@ const Team = ({ params }: { params: { teamTriCode: string } }) => {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableData>Season</TableData>
-                  <TableData>Game Types</TableData>
+                  <TableData>
+                    <TableLabel>Season</TableLabel>
+                  </TableData>
+                  <TableData>
+                    <TableLabel>Game Types</TableLabel>
+                  </TableData>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {stats.map((item) => (
                   <TableRow key={item.season}>
-                    <TableData>{item.season}</TableData>
-                    <TableData>{item.gameTypes.join(", ")}</TableData>
+                    <TableData>
+                      <TableDetail>
+                        {`${item.season.toString().slice(0, 4)}-${item.season
+                          .toString()
+                          .slice(4, 8)}`}
+                      </TableDetail>
+                    </TableData>
+                    <TableData>
+                      <TableDetail>
+                        {item.gameTypes
+                          .map((gt) =>
+                            gt === 2 ? "Regular Season" : "Playoffs"
+                          )
+                          .join(", ")}
+                      </TableDetail>
+                    </TableData>
                   </TableRow>
                 ))}
               </TableBody>
