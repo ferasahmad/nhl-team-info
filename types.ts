@@ -44,3 +44,8 @@ export type CombinedTeamInfo = {
   ties: number | null;
   triCode: string;
 };
+
+export type ClubStats = {
+  season: number;
+  gameTypes: number[];
+};

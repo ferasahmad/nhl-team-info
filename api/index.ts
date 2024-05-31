@@ -1,4 +1,4 @@
-import { Team, TeamDetails, CombinedTeamInfo } from "../types";
+import { Team, TeamDetails, CombinedTeamInfo, ClubStats } from "../types";
 
 const apiRequest = async <T>(url: string): Promise<T | null> => {
   try {
@@ -21,20 +21,26 @@ export const fetchCombinedTeamInfo = async (): Promise<
   const summaryUrl = "https://api.nhle.com/stats/rest/en/team/summary";
   const detailsUrl = "https://api.nhle.com/stats/rest/en/team";
 
-  const teamSummaryData = await apiRequest<{ data: Team[] }>(summaryUrl);
-  const teamDetailsData = await apiRequest<{ data: TeamDetails[] }>(detailsUrl);
+  try {
+    const teamSummaryData = await apiRequest<{ data: Team[] }>(summaryUrl);
+    const teamDetailsData = await apiRequest<{ data: TeamDetails[] }>(
+      detailsUrl
+    );
 
-  if (!teamSummaryData || !teamDetailsData) {
-    return null;
-  }
+    if (!teamSummaryData || !teamDetailsData) {
+      throw new Error("Failed to fetch team data");
+    }
 
-  const combinedInfo: CombinedTeamInfo[] = teamSummaryData.data
-    .map((summary) => {
-      const details = teamDetailsData.data.find(
-        (detail) => detail.fullName === summary.teamFullName
-      );
+    const combinedInfo: CombinedTeamInfo[] = teamSummaryData.data
+      .map((summary) => {
+        const details = teamDetailsData.data.find(
+          (detail) => detail.fullName === summary.teamFullName
+        );
 
-      if (details) {
+        if (!details) {
+          return null;
+        }
+
         return {
           id: details.id,
           teamFullName: summary.teamFullName,
@@ -45,24 +51,17 @@ export const fetchCombinedTeamInfo = async (): Promise<
           ties: summary.ties,
           triCode: details.triCode,
         };
-      }
+      })
+      .filter((item): item is CombinedTeamInfo => item !== null);
 
-      return null;
-    })
-    .filter((item) => item !== null) as CombinedTeamInfo[];
-
-  return combinedInfo;
+    return combinedInfo;
+  } catch (error) {
+    console.error("Error fetching combined team information:", error);
+    return null;
+  }
 };
 
-fetchCombinedTeamInfo().then((data) => {
-  if (data) {
-    console.log(data);
-  } else {
-    console.error("Failed to fetch combined team information.");
-  }
-});
-
-export const fetchTeams = async (): Promise<Team[] | null> => {
-  const url = "https://api.nhle.com/stats/rest/en/team/summary";
-  return await apiRequest<Team[]>(url);
+export const fetchClubStats = async (teamTriCode: string) => {
+  const url = `https://api-web.nhle.com/v1/club-stats-season/${teamTriCode}`;
+  return await apiRequest<ClubStats[]>(url);
 };

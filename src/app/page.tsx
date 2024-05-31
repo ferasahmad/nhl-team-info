@@ -4,6 +4,15 @@ import styled from "@emotion/styled";
 import { useRouter } from "next/navigation";
 import { CombinedTeamInfo } from "../../types";
 import { fetchCombinedTeamInfo } from "../../api";
+import {
+  Table,
+  TableBody,
+  TableData,
+  TableHead,
+  TableRow,
+  TableDetail,
+  TableLabel,
+} from "../../components/Table";
 
 const LeagueSummary: React.FC = () => {
   const router = useRouter();
@@ -26,7 +35,7 @@ const LeagueSummary: React.FC = () => {
     }
   };
 
-  const onClickViewDetails = (triCode: string) => {
+  const onClickViewTableDetails = (triCode: string) => {
     router.push(`/team/${triCode}`);
   };
 
@@ -45,16 +54,16 @@ const LeagueSummary: React.FC = () => {
             <TableHead>
               <TableRow>
                 <TableData>
-                  <Label>Team Name</Label>
+                  <TableLabel>Team Name</TableLabel>
                 </TableData>
                 <TableData>
-                  <Label>Wins</Label>
+                  <TableLabel>Wins</TableLabel>
                 </TableData>
                 <TableData>
-                  <Label>Losses</Label>
+                  <TableLabel>Losses</TableLabel>
                 </TableData>
                 <TableData>
-                  <Label>Ties</Label>
+                  <TableLabel>Ties</TableLabel>
                 </TableData>
                 <TableData />
               </TableRow>
@@ -64,19 +73,23 @@ const LeagueSummary: React.FC = () => {
                 teams.map((team) => (
                   <TableRow key={team.id}>
                     <TableData>
-                      <Detail>{team.teamFullName ?? "Undefined"}</Detail>
+                      <TableDetail>
+                        {team.teamFullName ?? "Undefined"}
+                      </TableDetail>
                     </TableData>
                     <TableData>
-                      <Detail>{team.wins ?? 0}</Detail>
+                      <TableDetail>{team.wins ?? 0}</TableDetail>
                     </TableData>
                     <TableData>
-                      <Detail>{team.losses ?? 0}</Detail>
+                      <TableDetail>{team.losses ?? 0}</TableDetail>
                     </TableData>
                     <TableData>
-                      <Detail>{team.ties ?? 0}</Detail>
+                      <TableDetail>{team.ties ?? 0}</TableDetail>
                     </TableData>
                     <TableData>
-                      <Button onClick={() => onClickViewDetails(team.triCode)}>
+                      <Button
+                        onClick={() => onClickViewTableDetails(team.triCode)}
+                      >
                         View Details
                       </Button>
                     </TableData>
@@ -109,43 +122,6 @@ const Header = styled.header`
 
 const Title = styled.h1`
   color: white;
-`;
-
-const Table = styled.table`
-  background: white;
-  border-radius: 20px;
-  padding: 20px;
-  width: 100%;
-  max-width: 1200px;
-  margin-top: 20px;
-`;
-
-const TableHead = styled.thead`
-  background: #f5f5f5;
-`;
-
-const TableData = styled.td`
-  flex: 1;
-  padding: 10px;
-`;
-
-const TableBody = styled.tbody``;
-
-const TableRow = styled.tr`
-  display: flex;
-  padding: 20px;
-  border-bottom: 1px solid #d8d8d8;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const Label = styled.p`
-  font-weight: 700;
-  text-align: center;
-`;
-
-const Detail = styled.p`
-  text-align: center;
 `;
 
 const Button = styled.button`
